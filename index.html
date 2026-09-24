@@ -3,512 +3,658 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hassan Al Hussein — Computer Engineering</title>
-<meta name="description" content="Hassan Al Hussein — Computer Engineering student at LIU. Builds autonomous robots, embedded systems, and software.">
+<title>Hassan Al Hussein | Security notes and projects</title>
+<meta name="description" content="Computer Engineering student at LIU learning offensive security in public. Study notes from TryHackMe and PortSwigger labs, an internship project, and a firefighting robot.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hassan-huss.github.io/portfolio/">
+<meta property="og:title" content="Hassan Al Hussein | Security notes and projects">
+<meta property="og:description" content="Learning offensive security in public: every lab becomes a written note.">
+<meta property="og:image" content="https://hassan-huss.github.io/portfolio/robot_car.jpeg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f4bd8'/%3E%3Ctext x='16' y='22.5' text-anchor='middle' font-family='monospace' font-size='22' font-weight='700' fill='%23fbfbfa'%3Eh%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <style>
   :root{
-    --bg:#0B1E33;
-    --bg-raised:#0F2740;
-    --bg-panel:#102B47;
-    --line:rgba(201,214,224,0.14);
-    --line-strong:rgba(201,214,224,0.32);
-    --paper:#EDEFE9;
-    --copper:#D08B4C;
-    --copper-dim:rgba(208,139,76,0.16);
-    --text-dim:#92A3B4;
-    --text-dimmer:#576A7C;
-    --condensed:'IBM Plex Sans Condensed', sans-serif;
-    --sans:'IBM Plex Sans', sans-serif;
-    --mono:'IBM Plex Mono', monospace;
+    --bg:#f3f4f2;
+    --surface:#fbfbfa;
+    --ink:#15171a;
+    --ink-2:#4a4f57;
+    --ink-3:#6b717a;
+    --line:#dcdfe0;
+    --accent:#2f4bd8;
+    --accent-soft:rgba(47,75,216,.08);
+    --code-bg:#e9ebee;
+    --sans:'Hanken Grotesk',system-ui,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
   }
-
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--bg);
-    color:var(--paper);
-    font-family:var(--sans);
-    font-size:16px;
-    line-height:1.65;
-    -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
-  }
-  a{color:inherit;text-decoration:none;}
-  ul{list-style:none;}
-  img{display:block;max-width:100%;}
-  ::selection{background:var(--copper);color:#0B1E33;}
-  :focus-visible{outline:1px solid var(--copper);outline-offset:3px;}
-
-  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
-
-  .eyebrow{
-    font-family:var(--mono);
-    font-size:0.72rem;
-    letter-spacing:0.18em;
-    text-transform:uppercase;
-    color:var(--copper);
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:14px;
-  }
-  .eyebrow::before{content:'';width:16px;height:1px;background:var(--copper);display:inline-block;}
-
-  h1,h2,h3{
-    font-family:var(--condensed);
-    font-weight:700;
-    letter-spacing:0.01em;
-  }
-
-  section{position:relative;padding:120px 0;border-bottom:1px solid var(--line);}
-
-  /* ---------- BLUEPRINT GRID BACKDROP ---------- */
-  .grid-backdrop{
-    position:absolute;inset:0;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size:48px 48px;
-    pointer-events:none;
-  }
-
-  /* ---------- NAV ---------- */
-  .nav{
-    position:fixed;top:0;left:0;right:0;z-index:100;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:20px 32px;
-    border-bottom:1px solid transparent;
-    background:rgba(11,30,51,0.82);
-    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-    transition:border-color 0.4s ease;
-  }
-  .nav.scrolled{border-bottom-color:var(--line-strong);}
-  .nav-logo{font-family:var(--mono);font-size:0.88rem;font-weight:500;letter-spacing:0.04em;color:var(--paper);}
-  .nav-logo span{color:var(--copper);}
-  .nav-links{display:flex;gap:36px;}
-  .nav-links a{
-    font-family:var(--mono);font-size:0.74rem;letter-spacing:0.1em;text-transform:uppercase;
-    color:var(--text-dim);position:relative;padding-bottom:4px;transition:color 0.25s ease;
-  }
-  .nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--copper);transition:width 0.25s ease;}
-  .nav-links a:hover{color:var(--paper);}
-  .nav-links a:hover::after{width:100%;}
-  .nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
-  .nav-toggle span{width:22px;height:1px;background:var(--paper);}
-
-  /* ---------- TITLE BLOCK (signature element) ---------- */
-  .title-block{
-    border:1px solid var(--line-strong);
-    background:rgba(255,255,255,0.015);
-    width:100%;
-    max-width:300px;
-  }
-  .title-block-row{
-    display:flex;justify-content:space-between;gap:18px;
-    padding:11px 16px;
-    border-bottom:1px solid var(--line);
-    font-family:var(--mono);font-size:0.7rem;letter-spacing:0.03em;
-  }
-  .title-block-row:last-child{border-bottom:none;}
-  .title-block-row .tb-label{color:var(--text-dimmer);text-transform:uppercase;flex-shrink:0;}
-  .title-block-row .tb-value{color:var(--paper);text-align:right;}
-
-  /* ---------- HERO ---------- */
-  .hero{min-height:100vh;display:flex;align-items:center;padding-top:90px;overflow:hidden;}
-  .hero-inner{position:relative;z-index:2;width:100%;}
-  .hero-layout{
-    display:grid;grid-template-columns:1fr auto;gap:60px;align-items:end;
-  }
-  .hero h1{
-    font-size:clamp(2.4rem, 6vw, 5.2rem);
-    line-height:1.02;
-    text-transform:uppercase;
-    margin-bottom:20px;
-    border-bottom:2px solid var(--copper);
-    padding-bottom:18px;
-    display:inline-block;
-  }
-  .hero-sub{max-width:600px;color:var(--text-dim);font-size:1.05rem;line-height:1.75;margin-bottom:40px;}
-  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;}
-
-  .btn{
-    font-family:var(--mono);font-size:0.78rem;letter-spacing:0.04em;text-transform:uppercase;
-    padding:15px 26px;border:1px solid var(--copper);transition:all 0.2s ease;
-    display:inline-flex;align-items:center;gap:10px;
-  }
-  .btn-solid{background:var(--copper);color:#0B1E33;}
-  .btn-solid:hover{background:transparent;color:var(--copper);}
-  .btn-outline{background:transparent;color:var(--paper);border-color:var(--line-strong);}
-  .btn-outline:hover{border-color:var(--copper);color:var(--copper);}
-
-  .corner-mark{position:absolute;width:18px;height:18px;border:var(--line-strong);pointer-events:none;z-index:2;}
-  .corner-mark.tl{top:24px;left:24px;border-top:1px solid var(--line-strong);border-left:1px solid var(--line-strong);}
-  .corner-mark.tr{top:24px;right:24px;border-top:1px solid var(--line-strong);border-right:1px solid var(--line-strong);}
-  .corner-mark.bl{bottom:24px;left:24px;border-bottom:1px solid var(--line-strong);border-left:1px solid var(--line-strong);}
-  .corner-mark.br{bottom:24px;right:24px;border-bottom:1px solid var(--line-strong);border-right:1px solid var(--line-strong);}
-
-  /* ---------- ABOUT ---------- */
-  .about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:70px;}
-  .about h2{font-size:clamp(1.7rem,3.2vw,2.3rem);margin-bottom:24px;text-transform:uppercase;}
-  .about-bio p{color:var(--text-dim);font-size:1rem;line-height:1.85;max-width:560px;margin-bottom:18px;}
-
-  .spec-table{border:1px solid var(--line-strong);}
-  .spec-row{display:flex;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid var(--line);}
-  .spec-row:last-child{border-bottom:none;}
-  .spec-row .sp-label{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dimmer);flex-shrink:0;}
-  .spec-row .sp-value{font-family:var(--sans);font-size:0.95rem;font-weight:500;text-align:right;}
-  .spec-row .sp-value span{color:var(--copper);}
-
-  /* ---------- SKILLS — BILL OF MATERIALS ---------- */
-  .skills h2{font-size:clamp(1.7rem,3.2vw,2.3rem);margin-bottom:10px;text-transform:uppercase;}
-  .skills-sub{color:var(--text-dim);font-size:0.95rem;margin-bottom:48px;max-width:560px;}
-  .bom{border:1px solid var(--line-strong);}
-  .bom-head{
-    display:grid;grid-template-columns:64px 1fr 2fr;gap:20px;
-    padding:14px 22px;border-bottom:1px solid var(--line-strong);
-    font-family:var(--mono);font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dimmer);
-  }
-  .bom-row{
-    display:grid;grid-template-columns:64px 1fr 2fr;gap:20px;align-items:center;
-    padding:22px;border-bottom:1px solid var(--line);
-    border-left:2px solid transparent;
-    opacity:0;
-    animation:bomFadeIn 0.5s ease forwards;
-    transition:background 0.2s ease, border-color 0.2s ease;
-  }
-  @keyframes bomFadeIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
-  .bom-row:last-child{border-bottom:none;}
-  .bom-row:hover{background:rgba(255,255,255,0.015);border-left-color:var(--copper);}
-  .bom-num{font-family:var(--mono);font-size:0.85rem;color:var(--copper);}
-  .bom-name{font-family:var(--sans);font-weight:600;font-size:0.98rem;}
-  .bom-desc{font-family:var(--sans);font-size:0.88rem;color:var(--text-dim);line-height:1.6;}
-
-  /* ---------- PROJECTS ---------- */
-  .projects h2{font-size:clamp(1.7rem,3.2vw,2.3rem);margin-bottom:48px;text-transform:uppercase;}
-  .case-card{border:1px solid var(--line-strong);background:var(--bg-raised);padding:52px;}
-  .case-top{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;margin-bottom:30px;}
-  .case-top h3{font-size:clamp(1.5rem,2.8vw,2rem);max-width:560px;text-transform:uppercase;}
-  .case-tagmono{font-family:var(--mono);font-size:0.7rem;color:var(--text-dimmer);letter-spacing:0.08em;}
-  .case-desc{color:var(--text-dim);font-size:1rem;line-height:1.8;max-width:680px;margin-bottom:40px;}
-
-  .plate-label{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--copper);margin-bottom:12px;}
-
-  .photo-block{display:grid;grid-template-columns:1.3fr 1fr;gap:0;border:1px solid var(--line-strong);margin-bottom:18px;}
-  .photo-figure{position:relative;aspect-ratio:0.92;overflow:hidden;background:#000;border-right:1px solid var(--line-strong);}
-  .photo-figure img{width:100%;height:100%;object-fit:cover;object-position:center 48%;display:block;}
-  .marker{
-    position:absolute;width:22px;height:22px;border-radius:50%;
-    background:rgba(11,30,51,0.88);border:1px solid var(--copper);
-    display:flex;align-items:center;justify-content:center;
-    font-family:var(--mono);font-size:0.66rem;color:var(--copper);
-    transform:translate(-50%,-50%);
-  }
-  .legend{padding:24px 26px;}
-  .legend-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
-  .legend-item:last-child{border-bottom:none;}
-  .legend-num{font-family:var(--mono);font-size:0.78rem;color:var(--copper);flex-shrink:0;width:18px;}
-  .legend-text{font-family:var(--sans);font-size:0.85rem;color:var(--text-dim);line-height:1.5;}
-  .legend-text b{color:var(--paper);font-weight:600;}
-  .photo-caption{
-    font-family:var(--mono);font-size:0.76rem;color:var(--text-dim);line-height:1.6;
-    padding:14px 18px;border:1px solid var(--line-strong);border-top:none;margin-bottom:44px;
-  }
-
-  .spec-block{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line-strong);margin-bottom:36px;}
-  .spec-block-item{padding:22px 24px;border-right:1px solid var(--line);}
-  .spec-block-item:last-child{border-right:none;}
-  .spec-block-item .sb-val{font-family:var(--condensed);font-size:1.7rem;font-weight:700;color:var(--copper);margin-bottom:4px;}
-  .spec-block-item .sb-label{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dimmer);}
-
-  .chip-row{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:48px;}
-  .chip{font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);border:1px solid var(--line-strong);padding:8px 13px;}
-
-  .schematic-block{border:1px solid var(--line-strong);margin-bottom:48px;}
-  .schematic-block img{width:100%;display:block;background:#fff;}
-  .schematic-caption{font-family:var(--mono);font-size:0.76rem;color:var(--text-dim);line-height:1.6;padding:14px 18px;border-top:1px solid var(--line-strong);}
-
-  .case-cols{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
-  .case-col h4{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--copper);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--line-strong);}
-  .case-col ul li{color:var(--text-dim);font-size:0.92rem;line-height:1.7;padding-left:20px;position:relative;margin-bottom:13px;}
-  .case-col ul li::before{content:'—';position:absolute;left:0;color:var(--copper);}
-
-  /* ---------- CONTACT ---------- */
-  .contact{text-align:center;border-bottom:none;}
-  .contact h2{font-size:clamp(2rem,5.2vw,3.6rem);margin-bottom:20px;text-transform:uppercase;}
-  .contact h2 span{color:var(--copper);}
-  .contact-sub{color:var(--text-dim);max-width:520px;margin:0 auto 16px;font-size:1rem;line-height:1.7;}
-
-  .status-block{
-    display:inline-flex;border:1px solid var(--line-strong);margin:24px 0 48px;
-  }
-  .status-block .title-block-row{padding:12px 22px;}
-
-  .contact-links{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;}
-  .contact-link{
-    display:flex;align-items:center;gap:9px;border:1px solid var(--line-strong);padding:15px 22px;
-    font-family:var(--mono);font-size:0.78rem;color:var(--text-dim);transition:all 0.2s ease;
-  }
-  .contact-link svg{width:15px;height:15px;color:var(--copper);}
-  .contact-link:hover{border-color:var(--copper);color:var(--paper);}
-
-  footer{padding:30px;text-align:center;font-family:var(--mono);font-size:0.7rem;color:var(--text-dimmer);letter-spacing:0.04em;}
-  footer span{color:var(--copper);}
-
-  @media (max-width:880px){
-    .about-grid{grid-template-columns:1fr;gap:44px;}
-    .case-cols{grid-template-columns:1fr;}
-    .spec-block{grid-template-columns:1fr;}
-    .spec-block-item{border-right:none;border-bottom:1px solid var(--line);}
-    .spec-block-item:last-child{border-bottom:none;}
-    .bom-head{display:none;}
-    .bom-row{grid-template-columns:40px 1fr;}
-    .bom-desc{grid-column:1 / -1;padding-left:0;}
-    .case-card{padding:34px 22px;}
-    .hero-layout{grid-template-columns:1fr;gap:36px;}
-    .photo-block{grid-template-columns:1fr;}
-    .photo-figure{aspect-ratio:1.1;border-right:none;border-bottom:1px solid var(--line-strong);}
-    .marker{display:none;}
-  }
-
-  @media (max-width:680px){
-    .nav-links{
-      position:fixed;top:62px;left:0;right:0;flex-direction:column;
-      background:rgba(11,30,51,0.98);border-bottom:1px solid var(--line-strong);
-      padding:26px 32px;gap:22px;transform:translateY(-130%);transition:transform 0.3s ease;
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#111316;
+      --surface:#171a1e;
+      --ink:#eceef1;
+      --ink-2:#a9afb8;
+      --ink-3:#858c96;
+      --line:#262a30;
+      --accent:#8ea0ff;
+      --accent-soft:rgba(142,160,255,.10);
+      --code-bg:#1f2328;
     }
-    .nav-links.open{transform:translateY(0);}
-    .nav-toggle{display:flex;}
-    section{padding:80px 0;}
-    .wrap{padding:0 22px;}
-    .hero h1{font-size:clamp(2.1rem,9vw,3rem);}
-    .title-block{max-width:100%;}
-    .hero-ctas{flex-direction:column;align-items:stretch;}
-    .btn{justify-content:center;}
-    .corner-mark{display:none;}
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  img{display:block;max-width:100%}
+  ::selection{background:var(--accent);color:var(--bg)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 32px}
+  code,.mono{font-family:var(--mono)}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-family:var(--mono);font-size:.9rem;font-weight:500;text-decoration:none}
+  .logo span{color:var(--accent)}
+  nav ul{display:flex;gap:28px;list-style:none}
+  nav ul a{text-decoration:none;font-size:.93rem;color:var(--ink-2);transition:color .2s}
+  nav ul a:hover{color:var(--ink)}
+
+  /* hero */
+  .hero{padding:88px 0 96px;display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center;min-height:calc(100dvh - 64px)}
+  .hero h1{font-size:clamp(2.6rem,5.4vw,4.4rem);line-height:1.02;letter-spacing:-.035em;font-weight:700;margin-bottom:22px}
+  .hero > div > p{font-size:1.15rem;color:var(--ink-2);max-width:34ch;margin-bottom:34px}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:8px;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid var(--ink);transition:transform .15s ease,background .2s,color .2s}
+  .btn:active{transform:translateY(1px)}
+  .btn-solid{background:var(--ink);color:var(--bg)}
+  .btn-solid:hover{background:var(--accent);border-color:var(--accent)}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--ink)}
+
+  /* the note card: a real excerpt from the writeups repo */
+  .note{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:28px 30px;position:relative;box-shadow:0 20px 50px -30px rgba(21,23,26,.25)}
+  .note-path{font-family:var(--mono);font-size:.76rem;color:var(--ink-3);margin-bottom:16px;display:flex;align-items:center;gap:6px}
+  .note h3{font-size:1.35rem;letter-spacing:-.02em;margin-bottom:10px}
+  .note p{color:var(--ink-2);font-size:.98rem;margin-bottom:18px}
+  .note table{width:100%;border-collapse:collapse;font-size:.86rem}
+  .note td{padding:9px 0;border-top:1px solid var(--line);vertical-align:top}
+  .note td:first-child{font-weight:600;width:42%;padding-right:12px}
+  .note td code{background:var(--code-bg);padding:1px 6px;border-radius:4px;font-size:.8rem}
+  .note-link{display:inline-flex;align-items:center;gap:6px;margin-top:18px;font-size:.88rem;color:var(--accent);text-decoration:none;font-weight:500}
+  .note-link:hover{text-decoration:underline}
+
+  section{padding:104px 0;border-top:1px solid var(--line)}
+  h2{font-size:clamp(1.9rem,3.4vw,2.6rem);letter-spacing:-.03em;line-height:1.1;margin-bottom:16px;max-width:22ch}
+  .lead{color:var(--ink-2);max-width:60ch;margin-bottom:48px}
+
+  /* security: numbers + writeups */
+  .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:56px;background:var(--surface)}
+  .fact{padding:26px 28px;border-right:1px solid var(--line)}
+  .fact:last-child{border-right:none}
+  .fact strong{display:block;font-size:2rem;letter-spacing:-.03em;line-height:1.1;margin-bottom:6px}
+  .fact span{color:var(--ink-2);font-size:.92rem}
+
+  .writeups{display:grid;grid-template-columns:1.4fr 1fr;gap:20px}
+  .wu{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:26px 28px;transition:border-color .2s,transform .2s}
+  .wu:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .wu.big{grid-row:span 2;background:var(--accent-soft)}
+  .wu .src{font-family:var(--mono);font-size:.76rem;color:var(--ink-3);margin-bottom:10px}
+  .wu h3{font-size:1.2rem;letter-spacing:-.015em;margin-bottom:8px}
+  .wu p{color:var(--ink-2);font-size:.95rem}
+  .wu.big h3{font-size:1.6rem}
+  .wu.big p{font-size:1.02rem;max-width:44ch}
+  .wu .go{display:inline-flex;align-items:center;gap:6px;margin-top:16px;color:var(--accent);font-size:.88rem;font-weight:500}
+  .tools{margin-top:40px;display:flex;flex-wrap:wrap;gap:8px}
+  .tools span{font-family:var(--mono);font-size:.8rem;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--ink-2)}
+
+  /* qcare */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+  .meta{font-family:var(--mono);font-size:.82rem;color:var(--ink-3);margin-bottom:14px}
+  .did{list-style:none}
+  .did li{padding:16px 0 16px 34px;position:relative;border-top:1px solid var(--line);color:var(--ink-2)}
+  .did li:last-child{border-bottom:1px solid var(--line)}
+  .did li i{position:absolute;left:0;top:19px;color:var(--accent);font-size:1.1rem}
+  .did b{color:var(--ink);font-weight:600}
+
+  /* robot */
+  .robot{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:center}
+  .robot figure{border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .robot img{aspect-ratio:4/5;object-fit:cover;width:100%}
+  .robot figcaption{font-size:.85rem;color:var(--ink-3);padding:12px 16px;background:var(--surface)}
+  .robot p{color:var(--ink-2);margin-bottom:16px;max-width:52ch}
+
+  /* contact */
+  .contact h2{max-width:none}
+  .links{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  footer{padding:32px 0 48px;color:var(--ink-3);font-size:.85rem}
+
+  /* ---- additions: built from the same tokens as above ---- */
+
+  /* skip link + mobile menu button */
+  .skip{position:absolute;left:16px;top:-60px;z-index:20;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none;transition:top .2s}
+  .skip:focus{top:12px}
+  .menu-btn{display:none;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);font-size:1.2rem;cursor:pointer}
+  [id]{scroll-margin-top:72px}
+
+  /* quote */
+  .quote figure{margin-bottom:28px}
+  .quote blockquote{font-size:clamp(1.9rem,3.4vw,2.6rem);letter-spacing:-.03em;line-height:1.15;font-weight:600;margin-bottom:18px;text-indent:-.42em;max-width:32ch}
+  .quote figcaption{font-family:var(--mono);font-size:.82rem;color:var(--ink-3)}
+  .quote .lead{margin-bottom:0;padding-left:18px;border-left:2px solid var(--accent)}
+
+  /* notes: stats strip, insight, lesson groups */
+  .facts.four{grid-template-columns:repeat(4,1fr)}
+  a.fact{text-decoration:none;transition:background .2s}
+  a.fact:hover{background:var(--accent-soft)}
+  a.fact:hover strong{color:var(--accent)}
+  .fact i{color:var(--accent);font-size:.85em;vertical-align:-1px}
+  .insight{background:var(--accent-soft);border:1px solid var(--line);border-radius:12px;padding:34px 36px;margin-bottom:20px}
+  .insight blockquote{font-size:clamp(1.3rem,2.2vw,1.6rem);font-weight:600;letter-spacing:-.02em;line-height:1.3;max-width:44ch;margin-bottom:14px}
+  .insight figcaption{color:var(--ink-2);font-size:.95rem;max-width:62ch}
+  .groups{display:grid;grid-template-columns:repeat(24,1fr);gap:20px}
+  .group{grid-column:span 13;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:26px 28px}
+  .group.narrow{grid-column:span 11}
+  .group.accent{background:var(--accent-soft)}
+  .group .src{font-family:var(--mono);font-size:.76rem;color:var(--ink-3);margin-bottom:10px}
+  .group h3{font-size:1.35rem;letter-spacing:-.02em;margin-bottom:6px}
+  .lessons{list-style:none}
+  .lessons li{padding:16px 0;border-top:1px solid var(--line)}
+  .lessons li:first-child{border-top:none;padding-top:10px}
+  .lessons li:last-child{padding-bottom:0}
+  .lessons p{color:var(--ink-2);font-size:.95rem;margin-bottom:8px}
+  .lessons a{display:inline-flex;align-items:center;gap:5px;margin-right:18px;color:var(--accent);font-size:.86rem;font-weight:500;text-decoration:none}
+  .lessons a:hover{text-decoration:underline}
+
+  /* certificates: same card and table as the hero note */
+  .certs{margin-top:16px}
+  .certs table{font-size:.95rem}
+  .certs th{font-family:var(--mono);font-size:.76rem;font-weight:400;color:var(--ink-3);text-align:left;padding:0 12px 10px 0}
+  .certs td{padding:14px 12px 14px 0}
+  .certs td:first-child{width:auto}
+  .certs td:nth-child(2){color:var(--ink-2)}
+
+  /* robot case study */
+  #robot .lead{margin-bottom:40px}
+  .photo{position:relative}
+  .robot .photo img{aspect-ratio:auto;height:auto}
+  .marker,.legend .num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--surface);border:1.5px solid var(--accent);color:var(--accent);font-family:var(--mono);font-size:.74rem;font-weight:500}
+  .marker{position:absolute;transform:translate(-50%,-50%);box-shadow:0 4px 12px -4px rgba(21,23,26,.5)}
+  .legend{list-style:none}
+  .legend li{display:grid;grid-template-columns:26px 1fr;gap:16px;align-items:start;padding:16px 0;border-top:1px solid var(--line);color:var(--ink-2)}
+  .legend li:last-child{border-bottom:1px solid var(--line)}
+  .legend b{color:var(--ink);font-weight:600}
+  .schematic{margin:48px 0 56px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+  .schematic img{width:100%;height:auto;background:#fbfbfa}
+  .schematic figcaption{font-size:.85rem;color:var(--ink-3);padding:12px 16px;border-top:1px solid var(--line)}
+  .case-cols{display:grid;grid-template-columns:.8fr 1.1fr 1.1fr;gap:40px}
+  .case-cols h3{font-size:1.2rem;letter-spacing:-.015em;margin-bottom:12px}
+  .plain{list-style:none}
+  .plain li{padding:11px 0;border-top:1px solid var(--line);color:var(--ink-2);font-size:.95rem}
+  .plain b{color:var(--ink);font-weight:600}
+
+  /* qcare screenshots */
+  .shots{margin-top:56px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+  .shots-row{display:grid;grid-template-columns:1.754fr .5635fr;gap:1px;background:var(--line)}
+  .shots-row img{width:100%;height:auto}
+  .shots figcaption{font-size:.85rem;color:var(--ink-3);padding:12px 16px;border-top:1px solid var(--line)}
+
+  /* about */
+  .about{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:start}
+  .about .lead b{color:var(--ink);font-weight:600}
+  .facts-list div{display:grid;grid-template-columns:104px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+  .facts-list div:first-child{border-top:none;padding-top:0}
+  .facts-list div:last-child{padding-bottom:0}
+  .facts-list dt{font-family:var(--mono);font-size:.76rem;color:var(--ink-3);padding-top:3px}
+  .facts-list dd{font-size:.95rem}
+
+  /* hero card tabs */
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px}
+  .tab{font-family:var(--mono);font-size:.82rem;font-weight:500;color:var(--ink-3);background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:6px 12px 10px;cursor:pointer;transition:color .2s,border-color .2s}
+  .tab:first-child{padding-left:0}
+  .panels{display:grid}
+  .panel{grid-area:1/1}
+  .panel[hidden]{display:block;visibility:hidden}
+  .tab:hover{color:var(--ink)}
+  .tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+  @media (prefers-reduced-motion:no-preference){
+    .panel:not([hidden]){animation:rise .45s cubic-bezier(.16,1,.3,1) both}
   }
 
-  @media (prefers-reduced-motion: reduce){
-    *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;}
-    html{scroll-behavior:auto;}
+  /* motion: reveal on enter, only when the user allows motion */
+  @media (prefers-reduced-motion:no-preference){
+    .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+    .reveal.in{opacity:1;transform:none}
+    .hero > *{animation:rise .8s cubic-bezier(.16,1,.3,1) both}
+    .hero > *:nth-child(2){animation-delay:.12s}
+    @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  }
+
+  @media (max-width:1024px){
+    .facts.four{grid-template-columns:1fr 1fr}
+    .facts.four .fact:nth-child(2){border-right:none}
+    .facts.four .fact:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  }
+
+  @media (max-width:860px){
+    .wrap{padding:0 16px}
+    .menu-btn{display:inline-flex}
+    nav ul{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:0;padding:8px 16px 16px;background:var(--bg);border-bottom:1px solid var(--line)}
+    nav ul.open{display:flex}
+    nav ul a{display:block;padding:12px 0;font-size:1rem;color:var(--ink)}
+    nav ul li + li{border-top:1px solid var(--line)}
+    .hero{grid-template-columns:1fr;min-height:0;padding:56px 0 64px;gap:40px}
+    section{padding:72px 0}
+    .facts{grid-template-columns:1fr}
+    .fact{border-right:none;border-bottom:1px solid var(--line)}
+    .fact:last-child{border-bottom:none}
+    .writeups,.split,.robot{grid-template-columns:1fr}
+    .wu.big{grid-row:auto}
+    .split{gap:32px}
+    .facts.four{grid-template-columns:1fr}
+    .groups{grid-template-columns:1fr}
+    .group,.group.narrow{grid-column:auto;padding:22px 20px}
+    .insight{padding:26px 22px}
+    .case-cols{grid-template-columns:1fr;gap:32px}
+    .about{grid-template-columns:1fr;gap:32px}
+    .shots{margin-top:40px}
+    .shots-row{grid-template-columns:1fr;background:var(--surface)}
+    .shots-row img:last-child{width:min(240px,70%);margin:16px auto;border:1px solid var(--line);border-radius:12px}
+    .facts-list div{grid-template-columns:88px 1fr}
+    .schematic{margin:32px 0 40px}
+    .marker{width:22px;height:22px;font-size:.68rem}
+    .certs thead{display:none}
+    .certs tr{display:block;border-top:1px solid var(--line);padding:12px 0}
+    .certs tr:first-child{border-top:none;padding-top:0}
+    .certs td{display:block;border-top:none;padding:2px 0}
+    .certs td:empty{display:none}
   }
 </style>
 </head>
 <body>
 
-<nav class="nav" id="nav">
-  <div class="nav-logo">H.ALHUSSEIN<span>/</span>2028</div>
-  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
-  <ul class="nav-links" id="navLinks">
-    <li><a href="#about">About</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav aria-label="Main">
+  <div class="wrap">
+    <a class="logo" href="#top">hassan<span>@</span>huss</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu"><i class="ph ph-list" aria-hidden="true"></i></button>
+    <ul id="nav-links">
+      <li><a href="#notes">Notes</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#robot">Robot</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
 </nav>
 
-<section class="hero" id="home">
-  <div class="grid-backdrop"></div>
-  <div class="corner-mark tl"></div>
-  <div class="corner-mark tr"></div>
-  <div class="corner-mark bl"></div>
-  <div class="corner-mark br"></div>
-  <div class="wrap hero-inner">
-    <div class="hero-layout">
-      <div>
-        <div class="eyebrow">Computer Engineering · LIU · Tripoli, Lebanon</div>
-        <h1>Hassan<br>Al Hussein</h1>
-        <p class="hero-sub">I build things that think, move, and solve problems — from autonomous robots to embedded systems. Currently a first-year CE student at LIU, chasing my first internship and leaving a mark along the way.</p>
-        <div class="hero-ctas">
-          <a class="btn btn-solid" href="mailto:hassanelhussein2090@gmail.com">Email Me</a>
-          <a class="btn btn-outline" href="https://hassan-huss.github.io/Hassan_AlHussein_CV.docx" download="Hassan Al Hussein - CV.docx">Download CV</a>
-        </div>
-      </div>
-      <div class="title-block">
-        <div class="title-block-row"><span class="tb-label">Drawing No.</span><span class="tb-value">2028-001</span></div>
-        <div class="title-block-row"><span class="tb-label">Subject</span><span class="tb-value">H. Al Hussein</span></div>
-        <div class="title-block-row"><span class="tb-label">Discipline</span><span class="tb-value">Comp. Engineering</span></div>
-        <div class="title-block-row"><span class="tb-label">Status</span><span class="tb-value">Year 1 of 3</span></div>
-        <div class="title-block-row"><span class="tb-label">Location</span><span class="tb-value">Tripoli, LB</span></div>
+<main id="main">
+<div class="wrap" id="top">
+  <header class="hero">
+    <div>
+      <h1>Hassan Al Hussein</h1>
+      <p>Computer Engineering student learning offensive security in public. Every lab becomes a written note.</p>
+      <div class="ctas">
+        <a class="btn btn-solid" href="https://github.com/hassan-huss/cybersecurity" target="_blank" rel="noopener"><i class="ph ph-notebook"></i>Read my notes</a>
+        <a class="btn btn-ghost" href="Hassan_Al_Hussein-CV.pdf" target="_blank" rel="noopener"><i class="ph ph-file-pdf"></i>CV</a>
       </div>
     </div>
-  </div>
-</section>
 
-<section class="about" id="about">
-  <div class="grid-backdrop"></div>
-  <div class="wrap about-grid">
-    <div class="about-bio">
-      <div class="eyebrow">About</div>
-      <h2>Understanding how things work — then building them better.</h2>
-      <p>I'm Hassan — a Computer Engineering student at Lebanese International University, currently in my first year and already deep in the world of hardware, code, and everything in between. I got into engineering because I've always been the person in the room who needs to understand how things work. Not just use them — understand them. That obsession led me from taking apart old PCs as a kid to building autonomous firefighting robots today.</p>
-      <p>When I'm not debugging circuits or writing code, you'll find me in a gaming session, listening to Beethoven or Metallica (yes, both), or deep in a rabbit hole about networking and ethical hacking. I speak Arabic, English, and a little French — which means I can argue about tech in three languages. I'm looking for an internship where I can contribute, learn fast, and build things that actually matter.</p>
-    </div>
-    <div class="spec-table">
-      <div class="spec-row"><span class="sp-label">Currently Studying</span><span class="sp-value">Computer Engineering <span>@ LIU</span></span></div>
-      <div class="spec-row"><span class="sp-label">Exploring On My Own</span><span class="sp-value">Ethical Hacking <span>& Cybersecurity</span></span></div>
-      <div class="spec-row"><span class="sp-label">Languages</span><span class="sp-value">Arabic, English<span>, French</span></span></div>
-      <div class="spec-row"><span class="sp-label">Based In</span><span class="sp-value">Tripoli<span>, Lebanon</span></span></div>
-    </div>
-  </div>
-</section>
+    <article class="note" aria-label="Three bugs from my notes, in one sentence each">
+      <div class="tabs" role="tablist" aria-label="Pick a bug">
+        <button class="tab" role="tab" id="tab-idor" aria-controls="panel-idor" aria-selected="true">IDOR</button>
+        <button class="tab" role="tab" id="tab-ssrf" aria-controls="panel-ssrf" aria-selected="false" tabindex="-1">SSRF</button>
+        <button class="tab" role="tab" id="tab-xss" aria-controls="panel-xss" aria-selected="false" tabindex="-1">XSS</button>
+      </div>
 
-<section class="skills" id="skills">
+      <div class="panels">
+      <div class="panel" role="tabpanel" id="panel-idor" aria-labelledby="tab-idor">
+        <div class="note-path"><i class="ph ph-file-md"></i>cybersecurity / TryHackMe / Vulnerabilities / IDOR.md</div>
+        <h3>IDOR, in one sentence</h3>
+        <p>The app checks <em>who you are</em> (login) but not <em>what you're allowed to touch</em> (permission).</p>
+        <table>
+          <tr><td>Bug class</td><td>Broken access control, OWASP Top 10 #1</td></tr>
+          <tr><td>How I test it</td><td>Two accounts: take an ID from A, request it as B</td></tr>
+          <tr><td>The fix</td><td>A server-side ownership check on every request</td></tr>
+        </table>
+        <a class="note-link" href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/IDOR/IDOR.md" target="_blank" rel="noopener">Open the full note <i class="ph ph-arrow-up-right"></i></a>
+      </div>
+
+      <div class="panel" role="tabpanel" id="panel-ssrf" aria-labelledby="tab-ssrf" hidden>
+        <div class="note-path"><i class="ph ph-file-md"></i>cybersecurity / TryHackMe / Vulnerabilities / SSRF.md</div>
+        <h3>SSRF, in one sentence</h3>
+        <p>Internal systems trust the server, so if you can steer <em>where the server fetches from</em>, you borrow that trust.</p>
+        <table>
+          <tr><td>Where it hides</td><td>URL previews, webhooks, "import from URL", avatar loaders</td></tr>
+          <tr><td>Blind version</td><td>Confirmed by making the server call a listener I control</td></tr>
+          <tr><td>The fix</td><td>Parse the URL, resolve the host, check it against an allow list</td></tr>
+        </table>
+        <a class="note-link" href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/SSRF/SSRF.md" target="_blank" rel="noopener">Open the full note <i class="ph ph-arrow-up-right"></i></a>
+      </div>
+
+      <div class="panel" role="tabpanel" id="panel-xss" aria-labelledby="tab-xss" hidden>
+        <div class="note-path"><i class="ph ph-file-md"></i>cybersecurity / TryHackMe / Vulnerabilities / XSS.md</div>
+        <h3>XSS, in one sentence</h3>
+        <p>A site should show what you type <em>as text</em>; XSS is when the browser runs it <em>as code</em> inside the trusted page.</p>
+        <table>
+          <tr><td>Four types</td><td>Reflected, stored, DOM-based, blind</td></tr>
+          <tr><td>What decides the attack</td><td>Where the input lands: tag, attribute or script</td></tr>
+          <tr><td>The fix</td><td>Encode output for that exact spot, don't just filter input</td></tr>
+        </table>
+        <a class="note-link" href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/XSS/XSS.md" target="_blank" rel="noopener">Open the full note <i class="ph ph-arrow-up-right"></i></a>
+      </div>
+      </div>
+    </article>
+  </header>
+</div>
+
+<section class="quote" aria-label="Why I work this way">
   <div class="wrap">
-    <div class="eyebrow">Bill of Materials</div>
-    <h2>What I work with.</h2>
-    <p class="skills-sub">The tools and languages behind everything I build — from circuit board to source code.</p>
-    <div class="bom">
-      <div class="bom-head"><span>No.</span><span>Item</span><span>Notes</span></div>
-
-      <div class="bom-row" style="animation-delay:0.0s;"><div class="bom-num">01</div><div class="bom-name">Java & OOP</div><div class="bom-desc">Structuring programs around objects, classes, and clean inheritance — the backbone of most of my coursework.</div></div>
-      <div class="bom-row" style="animation-delay:0.05s;"><div class="bom-num">02</div><div class="bom-name">Arduino & Embedded Systems</div><div class="bom-desc">Writing firmware that reads sensors, makes decisions, and drives motors in real time — no human in the loop.</div></div>
-      <div class="bom-row" style="animation-delay:0.1s;"><div class="bom-num">03</div><div class="bom-name">Electric Circuits</div><div class="bom-desc">Analyzing and building circuits from first principles — voltage, current, and everything that ties them together.</div></div>
-      <div class="bom-row" style="animation-delay:0.15s;"><div class="bom-num">04</div><div class="bom-name">Tinkercad</div><div class="bom-desc">3D design and circuit simulation — prototyping and testing builds digitally before any soldering happens.</div></div>
-      <div class="bom-row" style="animation-delay:0.2s;"><div class="bom-num">05</div><div class="bom-name">Digital Logic Design</div><div class="bom-desc">Gates, flip-flops, and combinational logic — the layer between physics and software I find genuinely fascinating.</div></div>
-      <div class="bom-row" style="animation-delay:0.25s;"><div class="bom-num">06</div><div class="bom-name">Python (Basic)</div><div class="bom-desc">Scripting, automation, and the language I keep coming back to whenever I need to test an idea quickly.</div></div>
-    </div>
+    <figure class="reveal">
+      <blockquote>“If you know the enemy and know yourself, your victory will not stand in doubt.”</blockquote>
+      <figcaption>Sun Tzu, <cite>The Art of War</cite>, ch. X (Lionel Giles translation)</figcaption>
+    </figure>
+    <p class="lead reveal">It's how I work in labs. I fingerprint and do recon before touching anything: that's knowing the enemy. Then I write the lab up as a note, because explaining it shows me what I still don't understand: that's knowing myself.</p>
   </div>
 </section>
 
-<section class="projects" id="projects">
+<section id="notes">
   <div class="wrap">
-    <div class="eyebrow">Case File 01</div>
-    <h2>Featured project.</h2>
+    <h2 class="reveal">What I can explain.</h2>
+    <p class="lead reveal">Study notes from TryHackMe and PortSwigger labs. Each lesson below is something I can explain in plain words, linked to the note with the details.</p>
 
-    <div class="case-card">
-      <div class="case-top">
-        <h3>Autonomous Firefighting Robot</h3>
-        <div class="case-tagmono">Introduction to Engineering — LIU Final Project</div>
-      </div>
-      <p class="case-desc">A 4WD robot built with Arduino that autonomously detects fires using flame sensors and extinguishes them using an onboard fan module — no human input during operation. Designed and simulated in Tinkercad before physical assembly, then built and tested as a working prototype.</p>
+    <div class="facts four reveal">
+      <a class="fact" href="https://tryhackme.com/p/HassanH" target="_blank" rel="noopener"><strong>Top 1%</strong><span>of TryHackMe users worldwide, and #2 in Lebanon on the monthly leaderboard <i class="ph ph-arrow-up-right" aria-hidden="true"></i></span></a>
+      <a class="fact" href="https://github.com/hassan-huss/cybersecurity" target="_blank" rel="noopener"><strong>31 notes</strong><span>written up since 8 Sep 2026, public on GitHub <i class="ph ph-arrow-up-right" aria-hidden="true"></i></span></a>
+      <div class="fact"><strong>2 paths done</strong><span>PortSwigger: Server-side vulnerabilities and SQL injection (apprentice). Now on access control (IDOR) and XSS</span></div>
+      <div class="fact"><strong>In progress</strong><span>TryHackMe Jr Penetration Tester, after finishing Pre Security and Cybersecurity 101</span></div>
+    </div>
 
-      <div class="plate-label">Fig. 01 — The Build</div>
-      <div class="photo-block">
-        <div class="photo-figure">
-          <img src="robot_car.jpeg" alt="The finished 4WD autonomous firefighting robot, fully wired with labeled components">
-          <div class="marker" style="left:33%;top:35%;">1</div>
-          <div class="marker" style="left:44%;top:46%;">2</div>
-          <div class="marker" style="left:19%;top:43%;">3</div>
-          <div class="marker" style="left:46%;top:14%;">4</div>
-          <div class="marker" style="left:34%;top:62%;">5</div>
-        </div>
-        <div class="legend">
-          <div class="legend-item"><span class="legend-num">01</span><span class="legend-text"><b>Arduino UNO</b> — main controller running the detection &amp; response logic</span></div>
-          <div class="legend-item"><span class="legend-num">02</span><span class="legend-text"><b>L298N Motor Driver</b> — controls all four wheel motors</span></div>
-          <div class="legend-item"><span class="legend-num">03</span><span class="legend-text"><b>18650 Battery</b> — onboard power for motors &amp; logic</span></div>
-          <div class="legend-item"><span class="legend-num">04</span><span class="legend-text"><b>Flame Sensors & Wiring</b> — detect fire direction in real time</span></div>
-          <div class="legend-item"><span class="legend-num">05</span><span class="legend-text"><b>4WD Chassis</b> — full mobility across uneven terrain</span></div>
-        </div>
-      </div>
-      <div class="photo-caption">Fully wired and assembled — every component labeled above as it sits on the physical build, not a render.</div>
+    <figure class="insight reveal">
+      <blockquote>SQLi, XSS and SSRF are the same mistake in three places: untrusted input in a trusted context. IDOR is different: it's a permission check the app never wrote.</blockquote>
+      <figcaption>The idea that connects my notes. SQLi puts input into a database query, XSS into a page other people load, SSRF into a request the server makes.</figcaption>
+    </figure>
 
-      <div class="spec-block">
-        <div class="spec-block-item"><div class="sb-val">4WD</div><div class="sb-label">Drivetrain</div></div>
-        <div class="spec-block-item"><div class="sb-val">Auto</div><div class="sb-label">Operation Mode</div></div>
-        <div class="spec-block-item"><div class="sb-val">100%</div><div class="sb-label">Built From Scratch</div></div>
-      </div>
+    <div class="groups">
+      <article class="group wide accent reveal">
+        <div class="src">SQL injection and XSS</div>
+        <h3>Injection</h3>
+        <ul class="lessons">
+          <li>
+            <p>SQL injection happens when an app pastes my input into the query text. The real fix is a parameterized query: the query and the data travel separately, so data can never turn into code.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/Web-Security-Academy/SQL-Injection/Preventing-SQL-injection.md" target="_blank" rel="noopener">Preventing SQL injection <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>When the page shows nothing, the database can still answer yes-or-no questions. In PortSwigger labs I used Burp Intruder to rebuild a password from a "Welcome back" message, and confirmed another injection through a DNS lookup to Burp Collaborator.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/Web-Security-Academy/SQL-Injection/Exploiting-blind-SQLi-conditional-responses.md" target="_blank" rel="noopener">Blind SQLi lab <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/Web-Security-Academy/SQL-Injection/Exploiting-blind-SQLi-out-of-band-OAST.md" target="_blank" rel="noopener">Out-of-band lab <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>Stored safely is not the same as safe. In second-order injection, a username is saved harmlessly at signup, then a later query trusts it and runs it.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/Web-Security-Academy/SQL-Injection/Second-order-SQL-injection.md" target="_blank" rel="noopener">Second-order SQL injection <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>For XSS, where my input lands (between tags, inside an attribute, inside a script) decides how it breaks out. The defence is encoding output for that exact spot, not blocking a list of bad words.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/XSS/XSS.md#mitigation" target="_blank" rel="noopener">Cross-site scripting <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+        </ul>
+      </article>
 
-      <div class="chip-row">
-        <div class="chip">Arduino UNO</div>
-        <div class="chip">L298N Motor Driver</div>
-        <div class="chip">DC Motors</div>
-        <div class="chip">Flame Sensors</div>
-        <div class="chip">Fan Module</div>
-        <div class="chip">Tinkercad</div>
-      </div>
+      <article class="group narrow reveal">
+        <div class="src">IDOR</div>
+        <h3>Access control</h3>
+        <ul class="lessons">
+          <li>
+            <p>IDOR is an authorisation bug, not a login bug. The app knows who I am but never checks whether the record I asked for is mine.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/IDOR/IDOR.md#authentication-vs-authorisation" target="_blank" rel="noopener">Authentication vs authorisation <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>Encoding or hashing an ID only makes it harder to guess. Random IDs still leak, so I test with two accounts: take an ID from one and request it as the other.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/IDOR/IDOR.md#forms-an-object-reference-takes" target="_blank" rel="noopener">Forms an ID takes <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>IDs don't only live in the address bar. They travel in background API calls, JavaScript files, cookies and request bodies, so I check every request in the browser's Network tab.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/IDOR/IDOR.md#where-idor-vectors-hide" target="_blank" rel="noopener">Where IDOR hides <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>The same missing check on a write, like changing an email, is an account takeover, not just a leak. The fix is one ownership check on the server for every request.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/IDOR/IDOR.md#mitigation" target="_blank" rel="noopener">Mitigation <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+        </ul>
+      </article>
 
-      <div class="plate-label">Fig. 02 — Circuit Design</div>
-      <div class="schematic-block">
-        <img src="schematic.jpeg" alt="Tinkercad circuit schematic showing the Arduino UNO, flame sensors, L298N motor driver, servo, relay, and battery wiring">
-        <div class="schematic-caption">Full circuit designed and simulated in Tinkercad before any physical wiring — flame sensors, motor driver, servo, and dual 18650 battery packs.</div>
-      </div>
+      <article class="group narrow reveal">
+        <div class="src">SSRF</div>
+        <h3>Server-side requests</h3>
+        <ul class="lessons">
+          <li>
+            <p>Features that fetch a URL for you, like link previews and avatar imports, run from inside the network. Steer them and you reach internal pages the internet can't.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/SSRF/SSRF.md#what-ssrf-is-and-why-it-works" target="_blank" rel="noopener">Why SSRF works <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>Blind SSRF returns no content, so it is confirmed by making the server call back to a listener, or by differences in timing and errors.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/SSRF/SSRF.md#regular-vs-blind-ssrf" target="_blank" rel="noopener">Regular vs blind <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>The biggest target is the cloud metadata service: an internal address that hands temporary credentials to anything asking from inside the server.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/SSRF/SSRF.md#impact" target="_blank" rel="noopener">Impact <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>In the lab, a filter checked the path before the server tidied it up, so a harmless-looking path became a blocked one. Check the final destination, not the raw text.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Vulnerabilities/SSRF/SSRF.md#practical-acme-it-support-avatar-ssrf" target="_blank" rel="noopener">The avatar lab <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+        </ul>
+      </article>
 
-      <div class="case-cols">
-        <div class="case-col">
-          <h4>What I Built</h4>
-          <ul>
-            <li>A 4WD chassis controlled through an L298N driver for autonomous navigation</li>
-            <li>Flame-detection logic using analog sensors to locate a fire's direction</li>
-            <li>A fan-based extinguishing mechanism that triggers automatically on detection</li>
-            <li>A full circuit design simulated in Tinkercad before any physical build</li>
-            <li>Arduino UNO firmware handling sensing, decisions, and motor/fan output</li>
-          </ul>
-        </div>
-        <div class="case-col">
-          <h4>What I Learned</h4>
-          <ul>
-            <li>Turning raw sensor input into real-time autonomous decisions</li>
-            <li>Motor driver wiring, PWM control, and H-bridge circuit behavior</li>
-            <li>The value of simulating first — catching design flaws before they're physical</li>
-            <li>Debugging systems where software and electronics intersect</li>
-            <li>Real-world sensors are noisier than any simulation lets on</li>
-          </ul>
-        </div>
-      </div>
+      <article class="group wide reveal">
+        <div class="src">Nmap and web server rooms</div>
+        <h3>Recon and web servers</h3>
+        <ul class="lessons">
+          <li>
+            <p>My Nmap order: find which hosts are alive, scan ports on those, then identify the service and version behind each open port. Each step decides the next scan.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/tree/main/TryHackMe/Jr-Penetration-Tester/nmap" target="_blank" rel="noopener">Four Nmap rooms <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>Every web server introduces itself: in the Server or X-Powered-By header, or in its default 404 page when headers are hidden. Express sends no Server header by default, so a missing one is a clue too.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Jr-Penetration-Tester/Web-Application-Security-Fundamentals/Web-Server-Attacks-I.md#identifying-web-servers" target="_blank" rel="noopener">Identifying web servers <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>A version in a header is a lookup key. An IIS version tells me which Windows Server sits underneath and which CVEs apply, and an Apache 2.4.49 banner points straight to a known path-traversal bug.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Jr-Penetration-Tester/Web-Application-Security-Fundamentals/Web-Server-Attacks-II.md#fingerprinting--enumeration" target="_blank" rel="noopener">IIS fingerprinting <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Jr-Penetration-Tester/Web-Application-Security-Fundamentals/Modern-Web-Stacks.md#lamp" target="_blank" rel="noopener">Apache on LAMP <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+          <li>
+            <p>Most findings are defaults nobody reviewed. Across the four lab servers (Apache, Nginx, Node and Python) that meant versions in headers, directory listings, status pages and leftover files. None sent security headers.</p>
+            <a href="https://github.com/hassan-huss/cybersecurity/blob/main/TryHackMe/Jr-Penetration-Tester/Web-Application-Security-Fundamentals/Web-Server-Attacks-I.md#cross-cutting-patterns" target="_blank" rel="noopener">Patterns on every server <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </li>
+        </ul>
+      </article>
     </div>
   </div>
 </section>
 
-<section class="contact" id="contact">
-  <div class="grid-backdrop"></div>
+<section id="certificates">
   <div class="wrap">
-    <div class="eyebrow" style="justify-content:center;">Contact</div>
-    <h2>Let's build <span>something.</span></h2>
-    <p class="contact-sub">Open to internships, collaborations, or just talking about robots, circuits, and whatever's playing on my headphones. Reach out — I reply fast.</p>
-
-    <div class="status-block">
-      <div class="title-block-row"><span class="tb-label">Status</span><span class="tb-value">Open to Internships</span></div>
-      <div class="title-block-row"><span class="tb-label">Location</span><span class="tb-value">Tripoli, Lebanon</span></div>
-    </div>
-
-    <div class="contact-links">
-      <a class="contact-link" href="mailto:hassanelhussein2090@gmail.com">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg>
-        Email
-      </a>
-      <a class="contact-link" href="https://github.com/hassan-huss" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2a10 10 0 00-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.4 9.4 0 015 0c1.9-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0012 2z"/></svg>
-        GitHub
-      </a>
-      <a class="contact-link" href="https://www.linkedin.com/in/hassan-hussein-0900683a1/" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M7.5 10v6.5M7.5 7.5v.01M11.5 16.5V10M11.5 12.7c0-1.5 1-2.7 2.5-2.7s2.5 1.2 2.5 2.7v3.8"/></svg>
-        LinkedIn
-      </a>
-      <a class="contact-link" href="https://hassan-huss.github.io/Hassan_AlHussein_CV.docx" download="Hassan Al Hussein - CV.docx">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16"/></svg>
-        Download CV
-      </a>
+    <h2 class="reveal">Certificates.</h2>
+    <div class="note certs reveal">
+      <table>
+        <thead><tr><th scope="col">Certificate</th><th scope="col">Issuer</th><th scope="col">Credential ID</th></tr></thead>
+        <tbody>
+          <tr><td>Cybersecurity 101 path</td><td>TryHackMe, Sep 2026</td><td><code>THM-YM587Y7TG2</code></td></tr>
+          <tr><td>Hacker Holidays 2026, all 14 days</td><td>TryHackMe, Aug 2026</td><td><code>THM-YCIRVYUMVW</code></td></tr>
+          <tr><td>The Cybersecurity Threat Landscape</td><td>LinkedIn Learning</td><td></td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
 
-<footer>
-  Drawing No. 2028-001 <span>—</span> Rev. A <span>—</span> H. Al Hussein
-</footer>
+<section id="work">
+  <div class="wrap split">
+    <div class="reveal">
+      <div class="meta">TechTalks, Software Engineering Intern, Aug to Oct 2026</div>
+      <h2>QCare: a clinic booking and live-queue web app.</h2>
+      <p class="lead" style="margin-bottom:16px">Built by a remote team of five on the Java/Spring Boot track. I work across the stack: React on the front, Java and Spring Boot on the back, MySQL underneath.</p>
+      <p class="lead" style="margin-bottom:0">I built the change-password and forced password change features: the defender's side of the account problems I study in labs.</p>
+    </div>
+    <ul class="did reveal">
+      <li><i class="ph ph-stethoscope"></i><b>Doctor dashboard.</b> The whole page: the patient in the chair, the live waiting queue, today's appointments, and each patient's history.</li>
+      <li><i class="ph ph-calendar-dots"></i><b>Appointment rescheduling.</b> The backend endpoint and the screens that use it.</li>
+      <li><i class="ph ph-lock-key"></i><b>Account security.</b> Change-password, and a forced password change for staff.</li>
+      <li><i class="ph ph-git-pull-request"></i><b>Team workflow.</b> Sprints in Jira, reviews through GitHub pull requests, docs in Notion.</li>
+      <li><i class="ph ph-magnifying-glass"></i><b>Product research.</b> Customer interviews, market research and competitor analysis.</li>
+    </ul>
+  </div>
+  <div class="wrap">
+    <figure class="shots reveal">
+      <div class="shots-row">
+        <img src="qcare-dashboard-desktop.jpg" width="1182" height="674" alt="QCare doctor dashboard on desktop: the patient in the chair with ticket K-7, a View history button, and the waiting queue with estimated times" loading="lazy">
+        <img src="qcare-dashboard-phone.png" width="475" height="843" alt="The same doctor dashboard on a phone, with the cards stacked in one column" loading="lazy">
+      </div>
+      <figcaption>The doctor dashboard I built, on desktop and on a phone. All names and patients are demo data.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="robot">
+  <div class="wrap">
+    <h2 class="reveal">An autonomous firefighting robot.</h2>
+    <p class="lead reveal">My Intro to Engineering final project at LIU: a four-wheel-drive Arduino car that finds a flame with analog sensors and puts it out with a water sprayer, with no one driving it. I simulated the circuit in Tinkercad first, then built it and wrote the firmware.</p>
+
+    <div class="robot">
+      <figure class="reveal">
+        <div class="photo">
+          <img src="robot_car.jpeg" width="1121" height="1280" alt="The finished four-wheel-drive firefighting robot on a table, with the Arduino, motor driver, battery and wiring visible on the chassis" loading="lazy">
+          <span class="marker" style="left:33%;top:35%" aria-hidden="true">1</span>
+          <span class="marker" style="left:44%;top:46%" aria-hidden="true">2</span>
+          <span class="marker" style="left:19%;top:43%" aria-hidden="true">3</span>
+          <span class="marker" style="left:46%;top:14%" aria-hidden="true">4</span>
+          <span class="marker" style="left:34%;top:62%" aria-hidden="true">5</span>
+        </div>
+        <figcaption>The finished build. Each number is explained in the list.</figcaption>
+      </figure>
+      <ol class="legend reveal">
+        <li><span class="num">1</span><div><b>Arduino UNO.</b> Runs the firmware: reads the sensors, decides, and drives the motors and sprayer.</div></li>
+        <li><span class="num">2</span><div><b>L298N motor driver.</b> Takes the Arduino's signals and powers the four DC motors.</div></li>
+        <li><span class="num">3</span><div><b>18650 battery.</b> Onboard power, so the car runs untethered.</div></li>
+        <li><span class="num">4</span><div><b>Flame sensor wiring.</b> Carries the analog flame readings back to the Arduino.</div></li>
+        <li><span class="num">5</span><div><b>4WD chassis.</b> Four DC motors, one for each wheel.</div></li>
+      </ol>
+    </div>
+
+    <figure class="schematic reveal">
+      <img src="schematic.jpeg" width="1600" height="872" alt="Tinkercad circuit diagram: 18650 battery packs, analog flame sensors on a breadboard, an Arduino UNO, an L298N motor driver and four DC motors" loading="lazy">
+      <figcaption>The circuit in Tinkercad, drawn and simulated before any real wiring: battery packs on the left, flame sensors on the breadboard, the Arduino UNO in the middle, and the L298N driving four DC motors on the right.</figcaption>
+    </figure>
+
+    <div class="case-cols">
+      <div class="reveal">
+        <h3>Parts</h3>
+        <ul class="plain">
+          <li><b>Arduino UNO</b>, the controller</li>
+          <li><b>L298N</b> dual H-bridge motor driver</li>
+          <li><b>4 DC motors</b> on a 4WD chassis</li>
+          <li><b>Analog flame sensors</b></li>
+          <li><b>Water sprayer</b> to put the flame out</li>
+          <li><b>18650 batteries</b> for power</li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <h3>What I built</h3>
+        <ul class="plain">
+          <li>The motor control for a 4WD chassis through the L298N driver</li>
+          <li>Flame detection that uses the analog sensor readings to work out which way the fire is</li>
+          <li>A water sprayer that switches on by itself when a flame is detected</li>
+          <li>The full circuit in Tinkercad, simulated before building</li>
+          <li>The Arduino firmware for sensing, decisions, and motor and sprayer output</li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <h3>What I learned</h3>
+        <ul class="plain">
+          <li>Turning raw sensor input into real-time decisions with no one at the controls</li>
+          <li>Motor driver wiring, PWM speed control, and how an H-bridge behaves</li>
+          <li>Simulating first catches design mistakes before they're built into the hardware</li>
+          <li>Debugging where the code and the electronics meet</li>
+          <li>Real sensors are noisier than any simulation lets on</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap about">
+    <div class="reveal">
+      <h2>About.</h2>
+      <p class="lead" style="margin-bottom:16px">I'm Hassan, a second-year Computer Engineering student at LIU in Tripoli, Lebanon. Outside class I work through offensive security labs and write each one up, so I can see what I actually understand.</p>
+      <p class="lead" style="margin-bottom:0">My goal is to earn my <b>first paid bug bounty before I graduate</b>.</p>
+    </div>
+    <dl class="note facts-list reveal">
+      <div><dt>Education</dt><dd>Computer Engineering, Lebanese International University (LIU), 2025 to 2028 (expected)</dd></div>
+      <div><dt>GPA</dt><dd>3.8</dd></div>
+      <div><dt>Languages</dt><dd>Arabic (native), English (fluent), French (basic)</dd></div>
+      <div><dt>Based in</dt><dd>Tripoli, Lebanon</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2 class="reveal">Looking for a part-time or remote cybersecurity internship.</h2>
+    <p class="lead reveal" style="margin-bottom:0">Email is the fastest way to reach me. My notes and lab progress are public on GitHub and TryHackMe.</p>
+    <div class="links reveal">
+      <a class="btn btn-solid" href="mailto:hassanelhussein2090@gmail.com"><i class="ph ph-envelope-simple"></i>Email me</a>
+      <a class="btn btn-ghost" href="https://github.com/hassan-huss" target="_blank" rel="noopener"><i class="ph ph-github-logo"></i>GitHub</a>
+      <a class="btn btn-ghost" href="https://www.linkedin.com/in/hassan-al-hussein-0900683a1" target="_blank" rel="noopener"><i class="ph ph-linkedin-logo"></i>LinkedIn</a>
+      <a class="btn btn-ghost" href="https://tryhackme.com/p/HassanH" target="_blank" rel="noopener"><i class="ph ph-flag"></i>TryHackMe</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer><div class="wrap">Hassan Al Hussein, 2026</div></footer>
 
 <script>
-  const nav = document.getElementById('nav');
-  const onScroll = () => { if(window.scrollY > 40){ nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); } };
-  window.addEventListener('scroll', onScroll, { passive:true });
-  onScroll();
-
-  const navToggle = document.getElementById('navToggle');
-  const navLinks = document.getElementById('navLinks');
-  navToggle.addEventListener('click', () => {
-    const isOpen = navLinks.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', isOpen);
+  // hero card tabs (arrow keys move between tabs)
+  const tabs = [...document.querySelectorAll('.tab')];
+  const selectTab = tab => {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+  };
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => selectTab(tab));
+    tab.addEventListener('keydown', e => {
+      const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      if (!step) return;
+      const next = tabs[(i + step + tabs.length) % tabs.length];
+      selectTab(next); next.focus();
+    });
   });
-  navLinks.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => { navLinks.classList.remove('open'); navToggle.setAttribute('aria-expanded','false'); });
-  });
 
-  document.getElementById('year') && (document.getElementById('year').textContent = new Date().getFullYear());
+  // mobile menu
+  const menuBtn = document.querySelector('.menu-btn');
+  const navList = document.getElementById('nav-links');
+  const setMenu = open => {
+    navList.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', open);
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    menuBtn.firstElementChild.className = open ? 'ph ph-x' : 'ph ph-list';
+  };
+  menuBtn.addEventListener('click', () => setMenu(!navList.classList.contains('open')));
+  navList.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && navList.classList.contains('open')) { setMenu(false); menuBtn.focus(); } });
+
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
-
 </body>
 </html>
