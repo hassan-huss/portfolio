@@ -368,7 +368,7 @@
 
     <div class="facts four reveal">
       <a class="fact" href="https://tryhackme.com/p/HassanH" target="_blank" rel="noopener"><strong>Top 1%</strong><span>of TryHackMe users worldwide, and #2 in Lebanon on the monthly leaderboard <i class="ph ph-arrow-up-right" aria-hidden="true"></i></span></a>
-      <a class="fact" href="https://github.com/hassan-huss/cybersecurity" target="_blank" rel="noopener"><strong>31 notes</strong><span>written up since 8 Sep 2026, public on GitHub <i class="ph ph-arrow-up-right" aria-hidden="true"></i></span></a>
+      <a class="fact" href="https://github.com/hassan-huss/cybersecurity" target="_blank" rel="noopener"><strong><span id="note-count">31</span> notes</strong><span>written up since 8 Sep 2026, public on GitHub <i class="ph ph-arrow-up-right" aria-hidden="true"></i></span></a>
       <div class="fact"><strong>2 paths done</strong><span>PortSwigger: Server-side vulnerabilities and SQL injection (apprentice). Now on access control (IDOR) and XSS</span></div>
       <div class="fact"><strong>In progress</strong><span>TryHackMe Jr Penetration Tester, after finishing Pre Security and Cybersecurity 101</span></div>
     </div>
@@ -620,6 +620,16 @@
 <footer><div class="wrap">Hassan Al Hussein, 2026</div></footer>
 
 <script>
+  // note count: counted live from the notes repo (every .md file except READMEs).
+  // If GitHub can't be reached, the number typed into the page stays.
+  fetch('https://api.github.com/repos/hassan-huss/cybersecurity/git/trees/main?recursive=1')
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(data => {
+      const notes = data.tree.filter(f => f.type === 'blob' && /\.md$/i.test(f.path) && !/(^|\/)readme\.md$/i.test(f.path));
+      if (notes.length) document.getElementById('note-count').textContent = notes.length;
+    })
+    .catch(() => {});
+
   // hero card tabs (arrow keys move between tabs)
   const tabs = [...document.querySelectorAll('.tab')];
   const selectTab = tab => {
